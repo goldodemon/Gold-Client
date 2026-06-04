@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "jyro-client",
+  "version": "${version}",
+  "name": "Jyro-Client",
+  "description": "Sleek monochrome Fabric client HUD and ClickGUI shell for Minecraft ${minecraft_version}.",
+  "authors": [
+    "Gold-Client",
+    "OpenAI"
+  ],
+  "contact": {
+    "homepage": "https://github.com/goldodemon/Gold-Client",
+    "sources": "https://github.com/goldodemon/Gold-Client"
+  },
+  "license": "MIT",
+  "icon": "assets/jyro-client/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "dlindustries.vigillant.system.client.JyroClientMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}

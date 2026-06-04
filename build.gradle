@@ -1,0 +1,83 @@
+plugins {
+    id 'java'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = project.archives_base_name
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            srcDir 'src/client/java'
+        }
+    }
+    minecraftStubs {
+        java.srcDir 'src/minecraftStubs/java'
+    }
+}
+
+configurations {
+    minecraftStubsImplementation
+    compileOnly.extendsFrom minecraftStubsImplementation
+}
+
+dependencies {
+    compileOnly sourceSets.minecraftStubs.output
+}
+
+compileJava {
+    dependsOn compileMinecraftStubsJava
+    classpath += sourceSets.minecraftStubs.output
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "minecraft_version", project.minecraft_version
+    inputs.property "loader_version", project.loader_version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version,
+                "minecraft_version": project.minecraft_version,
+                "loader_version": project.loader_version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+    options.encoding = 'UTF-8'
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    inputs.property "archivesName", project.base.archivesName
+    from("LICENSE") {
+        rename { "${it}_${inputs.properties.archivesName}" }
+    }
+    manifest {
+        attributes(
+                'Implementation-Title': 'Jyro-Client',
+                'Implementation-Version': project.version
+        )
+    }
+}
+
+tasks.register('printJarLocation') {
+    dependsOn jar
+    doLast {
+        println "Built jar: ${tasks.jar.archiveFile.get().asFile}"
+    }
+}
+
+tasks.named('sourcesJar') {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
